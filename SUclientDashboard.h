@@ -1,6 +1,4 @@
 #pragma once
-//ClientDashboard.h
-
 #ifndef DASHBOARD_H
 #define DASHBOARD_H
 #include <iostream>
@@ -8,12 +6,12 @@
 #include "Database.h"
 #include "Client.h"
 #include "Proposal.h"
+#include "Dashboard.h"
 
 
-class FDclientDashboard  {
+class SUclientDashboard {
 public:
-	static void ClientdisplayMenu(Database& db , Client cd);
-	static void ClientdisplayProposal(Database& db, Proposal pd);
+	static void ClientdisplayMenu(Database& db, Proposal pd);
 };
 
 #endif 

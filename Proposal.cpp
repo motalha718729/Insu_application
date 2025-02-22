@@ -4,8 +4,9 @@
 #include "Database.h"
 #include "Client.h"
 #include "FDclientDashboard.h"
+#include "SUclientDashboard.h"
 
-Proposal::Proposal(int pid, int cid, std::string InsuType, long lyfcvramt, std::string status, std::string form) : proposalID(pid), clientID(cid), InsuranceType(InsuType), LifecoverAmount(lyfcvramt), status(status), form(form) {}
+Proposal::Proposal(int pid, int cid, std::string InsuType, long lyfcvramt, std::string status, std::string form , std::string paymentmode , std::string premiumpermon) : proposalID(pid), clientID(cid), InsuranceType(InsuType), LifecoverAmount(lyfcvramt), status(status), form(form) , paymentmode(paymentmode) , premiumpermon(premiumpermon) {}
 
 void Proposal::createNewPropsal(Database& db , Client cd) {
     std::string propID,clientid, InsuType, SelectedTopUps, PaymentMode, Status, PolicyNumber,addRiders, Form;
@@ -154,4 +155,66 @@ for (const auto& row : results) {
 void Proposal::cancellation(Database& db, int proposalID) {
     std::cout << "Cancel policy"; 
 
+}
+
+
+void Proposal::displayProposal(Database& db, int clientID) {
+    std::string query = "SELECT ProposalID , InsuranceType , Status , Form  FROM dbo.Proposal WHERE [Status] = 'Pending' AND ClientID = " + std::to_string(clientID);
+    std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
+    if (!results.empty()) {
+        // Print header
+        std::cout << "ProposalID\tInsuranceType\tStatus\tForm\n";
+        std::cout << "------------------------------------------------------\n";
+
+        // Loop through each row (map)
+        for (const auto& row : results) {
+            // For each row, print each column (key-value pair) in the map
+            std::cout << row.at("ProposalID") << "\t"
+                << row.at("InsuranceType") << "\t"
+                << row.at("Status") << "\t"
+                << row.at("Form") << "\n";
+        }
+    }
+    else {
+        std::cout << "No results found.\n";
+    }
+}
+
+Proposal Proposal::selectProposal(Database& db, int proposalID) {
+    std::string query = "SELECT * FROM Proposal WHERE ProposalID = " + std::to_string(proposalID);
+    std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
+
+    if (!results.empty()) {
+        std::map<std::string, std::string> proposal = results[0]; // Get the first (and hopefully only) row
+
+        // Now, display the details of the proposal
+        std::cout << "Proposal Details:\n";
+        std::cout << "Proposal ID: " << proposal["ProposalID"] << "\n";
+        std::cout << "Client ID: " << proposal["ClientID"] << "\n";
+        std::cout << "Insurance Type: " << proposal["InsuranceType"] << "\n";
+        std::cout << "Life Cover Amount: " << proposal["LifeCoverAmount"] << "\n";
+        std::cout << "Life Cover Up To Age: " << proposal["LifeCoverUpToAge"] << "\n";
+        std::cout << "Premium Per Month: " << proposal["PremiumPerMonth"] << "\n";
+        std::cout << "Selected Top Ups: " << proposal["SelectedTopUps"] << "\n";
+        std::cout << "Payment Tenure: " << proposal["PaymentTenure"] << "\n";
+        std::cout << "Payment Mode: " << proposal["PaymentMode"] << "\n";
+        std::cout << "Status: " << proposal["Status"] << "\n";
+        std::cout << "Policy Number: " << proposal["PolicyNumber"] << "\n";
+        std::cout << "Form: " << proposal["Form"] << "\n";
+        std::cout << "Created At: " << proposal["CreatedAt"] << "\n";
+    }
+    else {
+        std::cout << "No proposal found with ProposalID " << proposalID << "\n";
+    }
+    std::map<std::string, std::string> proposal = results[0];
+
+    return Proposal(proposalID, 0 , "", 0, "" ,"", proposal["PaymentMode"], proposal["PremiumPerMonth"]);
+}
+
+void Proposal::showClientDashboard(Database& db, Proposal pd) {
+    //std::cout << "Client Dashboard\n";
+    //std::cout << "1. Create New Proposal\n";
+    //std::cout << "2. List Policies\n"; 
+    //std::cout << "3. Cancel Policy\n";
+    FDclientDashboard::ClientdisplayProposal (db, pd);
 }

@@ -41,11 +41,11 @@ void Database::RunQuery(SQLHANDLE sqlConnHandle, const std::string& query) {
     SQLCHAR columnData1[256];
     SQLCHAR columnData2[256];
     SQLLEN dataLen;
-    while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+   /* while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
         SQLGetData(sqlStmtHandle, 1, SQL_C_CHAR, columnData1, sizeof(columnData1), &dataLen);
         SQLGetData(sqlStmtHandle, 2, SQL_C_CHAR, columnData2, sizeof(columnData2), &dataLen);
         std::cout << "Client ID: " << columnData1 << "::" <<"Name: " <<columnData2<< "\n";
-    } 
+    } */
     SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
 }
 

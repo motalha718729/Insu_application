@@ -134,6 +134,7 @@
     <ClCompile Include="Insu_app_workshop.cpp" />
     <ClCompile Include="login.cpp" />
     <ClCompile Include="Proposal.cpp" />
+    <ClCompile Include="SUclientDashboard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Database.h" />
     <ClInclude Include="login.h" />
     <ClInclude Include="Proposal.h" />
+    <ClInclude Include="SUclientDashboard.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

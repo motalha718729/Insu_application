@@ -3,6 +3,7 @@
 #include "Database.h"
 #include "Client.h"
 #include "FDclientDashboard.h"
+#include "Proposal.h"
 
 void FrontDeskDashboard::displayMenu(Database& db) {
     
@@ -41,10 +42,36 @@ void FrontDeskDashboard::displayMenu(Database& db) {
 }
 
 void SurveyorDashboard::displayMenu(Database& db) {
-    std::cout << "\nSurveyor Dashboard:\n";
-    std::cout << "1. Approve Proposals\n";
-    std::cout << "2. Review Policies\n";
-    std::cout << "3. Logout\n";
+    int choice;
+    do {
+        std::cout << "\nSurveyor Dashboard:\n";
+        std::cout << "1. Approve Proposals\n";
+        std::cout << "2. Review Policies\n";
+        std::cout << "3. Logout\n";
+        std::cout << "Enter Your Choice\n";
+        std::cin >> choice;
+
+        switch (choice) {
+        case 1:
+            int cd;
+            std::cout << "Enter Client Id : \n";
+            std::cin >> cd;
+
+            Proposal::displayProposal(db, cd);
+            int pID;
+            std::cout << "Enter Proposal ID: ";
+            std::cin >> pID;
+            {
+                Proposal proposal = Proposal::selectProposal(db, pID);
+                proposal.showClientDashboard(db, proposal); //  showSUClientDashboard()
+                
+            }
+            break;
+        case 3:
+            std::cout << "Exiting Front Desk DashBoard....\n";
+            break;
+        }
+    } while (choice != 3);
 }
 
 void UnderwriterDashboard::displayMenu(Database& db) {

@@ -22,7 +22,7 @@ public:
     static void createNewClient(Database& db);
     static void displayClients(Database& db);
     static Client selectClient(Database& db, int clientID);
-   void showClientDashboard(Database& db , Client cd);
+    void showClientDashboard(Database& db , Client cd);
 };
 
 #endif // CLIENT_H
