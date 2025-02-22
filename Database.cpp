@@ -49,6 +49,49 @@ void Database::RunQuery(SQLHANDLE sqlConnHandle, const std::string& query) {
     SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
 }
 
+
+
+std::vector<std::map<std::string, std::string>> Database::RunQuerydisplay(SQLHANDLE sqlConnHandle, const std::string& query) {
+    SQLHANDLE sqlStmtHandle;
+    SQLAllocHandle(SQL_HANDLE_STMT, sqlConnHandle, &sqlStmtHandle);
+
+    // Execute the query
+    if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLCHAR*)query.c_str(), SQL_NTS)) {
+        std::cerr << "Error executing query!\n";
+        return {}; // Return empty result if error occurs
+    }
+
+    std::vector<std::map<std::string, std::string>> result;  // This will store all rows as maps of column name -> value
+    SQLCHAR columnData[256];
+    SQLLEN dataLen;
+
+    // Get the number of columns in the result
+    SQLSMALLINT numColumns = 0;
+    SQLNumResultCols(sqlStmtHandle, &numColumns);
+
+    // Get column names dynamically and store them
+    std::vector<std::string> columnNames(numColumns);
+    for (SQLSMALLINT col = 0; col < numColumns; col++) {
+        SQLCHAR colName[256];
+        SQLSMALLINT colNameLen;
+        SQLDescribeCol(sqlStmtHandle, col + 1, colName, sizeof(colName), &colNameLen, NULL, NULL, NULL, NULL);
+        columnNames[col] = std::string(reinterpret_cast<char*>(colName), colNameLen);
+    }
+
+    // Fetch rows and store them in a map (column name -> value)
+    while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
+        std::map<std::string, std::string> row;
+        for (SQLSMALLINT col = 0; col < numColumns; col++) {
+            SQLGetData(sqlStmtHandle, col + 1, SQL_C_CHAR, columnData, sizeof(columnData), &dataLen);
+            row[columnNames[col]] = std::string(reinterpret_cast<char*>(columnData), dataLen);
+        }
+        result.push_back(row);  // Store the row in the result
+    }
+
+    SQLFreeHandle(SQL_HANDLE_STMT, sqlStmtHandle);
+    return result;
+}
+
 //std::vector<std::vector<std::string>> RunQuery(SQLHANDLE sqlConnHandle, const std::string& query) {
 //    SQLHANDLE sqlStmtHandle;
 //    SQLAllocHandle(SQL_HANDLE_STMT, sqlConnHandle, &sqlStmtHandle);
