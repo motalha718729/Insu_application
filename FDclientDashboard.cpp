@@ -4,12 +4,7 @@
 #include "Proposal.h"
 
 void FDclientDashboard::ClientdisplayMenu(Database& db , Client cd) {
-        //std::cout << "\nClient Dashboard:\n";
-        //std::cout << "1. Create a Proposal\n";
-        //std::cout << "2. Show Exisiting Policy\n";
-        //std::cout << "3. Cancelation\n";
-        //std::cout << "4. Exit\n";
-        //std::cout << "Enter your choice:";
+
     int choice;
     do {
         std::cout << "\nClient Dashboard:\n";
@@ -53,11 +48,11 @@ void FDclientDashboard::ClientdisplayProposal(Database& db, Proposal pd) {
     double premium = std::stod(pd.premiumpermon);
 
     if (pd.paymentmode == "HalfYr") {
-        premium = premium- (premium * 0.10);  // 10% discount for Half-Yearly
+        premium = (premium- (premium * 0.10))*6;  // 10% discount for Half-Yearly
         std::cout << "Applying 10% discount for Half-Yearly payment. Updated Premium: " << premium << "\n";
     }
     else if (pd.paymentmode == "Annual") {
-        premium = premium - (premium * 0.15);  // 15% discount for Annual
+        premium = (premium - (premium * 0.15))*12;  // 15% discount for Annual
         std::cout << "Applying 15% discount for Annual payment. Updated Premium: " << premium << "\n";
     }
 
@@ -105,12 +100,91 @@ void FDclientDashboard::ClientdisplayProposal(Database& db, Proposal pd) {
 //    std::cout << "Enter your choice:";
 //}
 //
-//void UWclientDashboard::ClientdisplayMenu(Database& db) {
-//    std::cout << "\nClient Dashboard:\n";
-//    std::cout << "1. Review Policy\n";
-//    std::cout << "2. Exit\n";
-//    std::cout << "Enter your choice:";
-//}
+// 
+void FDclientDashboard::ClientdisplayPolicy(Database& db, Proposal pd) {
+   /* std::cout << "\nPlease choose an option:\n";
+    std::cout << "1. Approve Proposal\n";
+    std::cout << "2. Reject Proposal\n";
+    std::cout << "Enter your choice (1 or 2): ";*/
+
+    std::cout << "Proposal Status: " << pd.status<< "\n";
+
+    if (pd.status == "Approved" && pd.form == "Proposal") {
+        std::string option;
+        std::cout << "Do you want to proceed to convert the proposal to a policy? (yes/no): ";
+        std::cin >> option;
+
+        if (option == "yes") {
+            // Changing the proposal status to Policy and updating the form
+            std::string query = "UPDATE dbo.Proposal SET  Form = 'Policy' WHERE ProposalID = " + std::to_string(pd.proposalID);
+            db.RunQuery(db.ConnectToSQLServer(true), query);
+            std::cout << "Proposal converted to Policy.\n";
+
+            // Now, let's handle payment details
+            std::string paymentOption;
+            double amountToPay = std::stod(pd.premiumpermon); // This should be the premium that needs to be paid
+
+            // Displaying payment options
+            std::cout << "Choose a preferred payment method:\n";
+            std::cout << "1. Cash\n2. Credit Card\n3. Debit Card\n4. Net Banking\n5. UPI\n6. Paytm\n";
+            std::cout << "Enter your choice (1-6): ";
+            std::cin >> paymentOption;
+
+            std::string paymentMethod;
+            switch (std::stoi(paymentOption)) {
+            case 1:
+                paymentMethod = "Cash";
+                break;
+            case 2:
+                paymentMethod = "Credit Card";
+                break;
+            case 3:
+                paymentMethod = "Debit Card";
+                break;
+            case 4:
+                paymentMethod = "Net Banking";
+                break;
+            case 5:
+                paymentMethod = "UPI";
+                break;
+            case 6:
+                paymentMethod = "Paytm";
+                break;
+            default:
+                paymentMethod = "Unknown";
+                break;
+            }
+
+            std::cout << "You selected " << paymentMethod << " for payment.\n";
+
+            // Accept Terms and Conditions
+            std::cout << "Please read and accept the terms and conditions before proceeding.\n";
+            std::cout << "Do you accept the terms and conditions? (yes/no): ";
+            std::string acceptTerms;
+            std::cin >> acceptTerms;
+
+            if (acceptTerms == "yes") {
+                // Insert payment data into the Payment table
+                std::string paymentQuery = "INSERT INTO dbo.Payment (ProposalID, AmountPaid, PaymentMode, PaymentDate, PaymentStatus) "
+                    "VALUES (" + std::to_string(pd.proposalID) + ", " + std::to_string(amountToPay) + ", '"
+                    + paymentMethod + "', GETDATE(), 'Completed')";
+                db.RunQuery(db.ConnectToSQLServer(true), paymentQuery);
+
+                std::cout << "Payment of " << amountToPay << " " << paymentMethod << " completed successfully.\n";
+            }
+            else {
+                std::cout << "You must accept the terms and conditions to proceed.\n";
+            }
+        }
+        else {
+            std::cout << "You chose not to proceed with converting the proposal to a policy.\n";
+        }
+    }
+    else {
+        std::cout << "The proposal is not yet approved or rejected. Please check again later.\n";
+    }
+}
+
 //void SMclientDashboard::ClientdisplayMenu(Database& db) {
 //    std::cout << "\nClient Dashboard:\n";
 //    std::cout << "1. Client Deletion\n";

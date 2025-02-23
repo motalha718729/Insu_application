@@ -14,6 +14,7 @@ class FDclientDashboard  {
 public:
 	static void ClientdisplayMenu(Database& db , Client cd);
 	static void ClientdisplayProposal(Database& db, Proposal pd);
+	static void ClientdisplayPolicy(Database& db, Proposal pd);
 };
 
 #endif 

@@ -53,7 +53,16 @@ void Client::createNewClient(Database& db) {
 
 void Client::displayClients(Database& db) { 
     std::string query = "SELECT ClientID, FirstName, LastName FROM dbo.Client";
-    db.RunQuery(db.ConnectToSQLServer(true),query);
+    std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
+    std::cout << "Clients List: " << std::endl;
+
+    // Loop through each row in the results vector
+    for (const auto& row : results) {
+        // Print ClientID, FirstName, and LastName for each client
+        std::cout << "ClientID: " << row.at("ClientID")
+            << ", FirstName: " << row.at("FirstName")
+            << ", LastName: " << row.at("LastName") << std::endl;
+    }
 }
 //void Client::displayClients(Database& db) {
 //    std::string query = "SELECT ClientID, FirstName, LastName FROM dbo.Client";
