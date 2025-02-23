@@ -48,11 +48,11 @@ void FDclientDashboard::ClientdisplayProposal(Database& db, Proposal pd) {
     double premium = std::stod(pd.premiumpermon);
 
     if (pd.paymentmode == "HalfYr") {
-        premium = (premium- (premium * 0.10))*6;  // 10% discount for Half-Yearly
+        premium = (premium- (premium * 0.10));  // 10% discount for Half-Yearly
         std::cout << "Applying 10% discount for Half-Yearly payment. Updated Premium: " << premium << "\n";
     }
     else if (pd.paymentmode == "Annual") {
-        premium = (premium - (premium * 0.15))*12;  // 15% discount for Annual
+        premium = (premium - (premium * 0.15));  // 15% discount for Annual
         std::cout << "Applying 15% discount for Annual payment. Updated Premium: " << premium << "\n";
     }
 
@@ -120,10 +120,20 @@ void FDclientDashboard::ClientdisplayPolicy(Database& db, Proposal pd) {
             db.RunQuery(db.ConnectToSQLServer(true), query);
             std::cout << "Proposal converted to Policy.\n";
 
+            std::string approvalQuery = "INSERT INTO dbo.Approvals (ProposalID, ApprovedBy, ApprovalStatus, ApprovalDate) "
+                "VALUES (" + std::to_string(pd.proposalID) + ", 'Mathew', 'Approved', GETDATE())";  // Replace 'Admin' with the actual person approving if needed
+            db.RunQuery(db.ConnectToSQLServer(true), approvalQuery);
+            std::cout << "Approval recorded in the system.\n";
+
             // Now, let's handle payment details
             std::string paymentOption;
-            double amountToPay = std::stod(pd.premiumpermon); // This should be the premium that needs to be paid
-
+            double amountToPay;
+            if (pd.paymentmode == "HalfYr" ) {
+                 amountToPay = std::stod(pd.premiumpermon)*6; // This should be the premium that needs to be paid
+             }
+            if (pd.paymentmode == "Annual") {
+                 amountToPay = std::stod(pd.premiumpermon)*12; // This should be the premium that needs to be paid
+            }
             // Displaying payment options
             std::cout << "Choose a preferred payment method:\n";
             std::cout << "1. Cash\n2. Credit Card\n3. Debit Card\n4. Net Banking\n5. UPI\n6. Paytm\n";
@@ -178,6 +188,11 @@ void FDclientDashboard::ClientdisplayPolicy(Database& db, Proposal pd) {
         }
         else {
             std::cout << "You chose not to proceed with converting the proposal to a policy.\n";
+
+            std::string rejectionQuery = "INSERT INTO dbo.Approvals (ProposalID, ApprovedBy, ApprovalStatus, ApprovalDate) "
+                "VALUES (" + std::to_string(pd.proposalID) + ", 'Mathew', 'Rejected', GETDATE())";  // Replace 'Admin' with the actual person rejecting if needed
+            db.RunQuery(db.ConnectToSQLServer(true), rejectionQuery);
+            std::cout << "Proposal rejection recorded in the system.\n";
         }
     }
     else {

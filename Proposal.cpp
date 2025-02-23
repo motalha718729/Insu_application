@@ -5,6 +5,8 @@
 #include "Client.h"
 #include "FDclientDashboard.h"
 #include "SUclientDashboard.h"
+#include <iomanip>
+
 
 Proposal::Proposal(int pid, int cid, std::string InsuType, long lyfcvramt, std::string status, std::string form , std::string paymentmode , std::string premiumpermon ) : proposalID(pid), clientID(cid), InsuranceType(InsuType), LifecoverAmount(lyfcvramt), status(status), form(form) , paymentmode(paymentmode) , premiumpermon(premiumpermon) {}
 
@@ -89,12 +91,12 @@ void Proposal::createNewPropsal(Database& db , Client cd) {
     std::getline(std::cin, Form);
 
     // You can also use the current date or prompt the user for the date as a string
-    std::cout << "Enter CreatedAt (e.g., YYYY-MM-DD HH:MM:SS): ";
-    std::getline(std::cin, CreatedAt);
+   /* std::cout << "Enter CreatedAt (e.g., YYYY-MM-DD HH:MM:SS): ";
+    std::getline(std::cin, CreatedAt);*/
 
     std::string query =  "INSERT INTO dbo.Proposal (ProposalID, ClientID, InsuranceType, LifeCoverAmount, LifeCoverUpToAge, PremiumPerMonth, SelectedTopUps, PaymentTenure, PaymentMode,  Status, PolicyNumber, Form, CreatedAt) VALUES ('" + propID + "','" + clientid + "', '" + InsuType + "', "+ std::to_string(LifeCoverAmount) + ", " + std::to_string(LifeCoverUpToAge) + ", " + std::to_string(PremiumPerMonth) + ", '" + SelectedTopUps + "', "
         + std::to_string(PaymentTenure) + ", '" + PaymentMode + "', '" + Status + "', '" + PolicyNumber + "', '"
-        + Form + "', '" + CreatedAt + "')";
+        + Form + "',  GetDate() )";
 
     db.RunQuery(db.ConnectToSQLServer(true), query);
     std::cout << "Proposal created successfully!\n";
@@ -130,27 +132,29 @@ std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.
 // Display the results
 if (!results.empty()) {
     for (const auto& row : results) {
-        std::cout << "ProposalID: " << row.at("ProposalID")
-            << ", InsuranceType: " << row.at("InsuranceType")
-            << ", LifeCoverAmount: " << row.at("LifeCoverAmount")
-            << ", LifeCoverUpToAge: " << row.at("LifeCoverUpToAge")
-            << ", TobaccoConsumption: " << row.at("SmokerStatus")
-            << ", AnnualIncome: " << row.at("AnnualIncome")
-            << ", PremiumPerMonth: " << row.at("PremiumPerMonth")
-            << ", SelectedTopUps: " << row.at("SelectedTopUps")
-            << ", PaymentTenure: " << row.at("PaymentTenure")
-            << ", PaymentMode: " << row.at("PaymentMode")
-            << ", Status: " << row.at("Status")
-            << ", PolicyNumber: " << row.at("PolicyNumber")
-            << ", Form: " << row.at("Form")
-            << ", CreatedAt: " << row.at("CreatedAt")
-            << ", FirstName: " << row.at("FirstName")
-            << ", LastName: " << row.at("LastName")
-            << ", Email: " << row.at("Email")
-            << ", Mobile: " << row.at("Mobile")
-            << "\n";
+        std::cout << "\nProposal Details:\n";
+        std::cout << "-------------------------------\n";
+        std::cout << "ProposalID          : " << row.at("ProposalID") << "\n";
+        std::cout << "Insurance Type      : " << row.at("InsuranceType") << "\n";
+        std::cout << "Life Cover Amount   : " << std::fixed << std::setprecision(2) << std::stod(row.at("LifeCoverAmount")) << "\n";
+        std::cout << "Life Cover Up To Age: " << row.at("LifeCoverUpToAge") << "\n";
+        std::cout << "Tobacco Consumption : " << row.at("SmokerStatus") << "\n";
+        std::cout << "Annual Income       : " << row.at("AnnualIncome") << "\n";
+        std::cout << "Premium Per Month   : " << std::fixed << std::setprecision(2) << std::stod(row.at("PremiumPerMonth")) << "\n";
+        std::cout << "Selected Top Ups    : " << row.at("SelectedTopUps") << "\n";
+        std::cout << "Payment Tenure      : " << row.at("PaymentTenure") << "\n";
+        std::cout << "Payment Mode        : " << row.at("PaymentMode") << "\n";
+        std::cout << "Status              : " << row.at("Status") << "\n";
+        std::cout << "Policy Number       : " << row.at("PolicyNumber") << "\n";
+        std::cout << "Form                : " << row.at("Form") << "\n";
+        std::cout << "Created At          : " << row.at("CreatedAt") << "\n";
+        std::cout << "First Name          : " << row.at("FirstName") << "\n";
+        std::cout << "Last Name           : " << row.at("LastName") << "\n";
+        std::cout << "Email               : " << row.at("Email") << "\n";
+        std::cout << "Mobile              : " << row.at("Mobile") << "\n";
+        std::cout << "-------------------------------\n";
     }
-}
+}  
 else {
     std::cout << "No results found.\n";
 }
