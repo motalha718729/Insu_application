@@ -4,6 +4,7 @@
 #include "Client.h"
 #include "FDclientDashboard.h"
 #include "Proposal.h"
+#include <limits>
 
 void FrontDeskDashboard::displayMenu(Database& db) {
     
@@ -148,6 +149,7 @@ void SuperManagerDashboard::displayMenu(Database& db) {
 
         default:
             std::cout << "Invalid choice, please try again.\n";
+            break;
         }
     } while (choice != 4);
 }
@@ -239,16 +241,26 @@ void SuperManagerDashboard::viewApprovalsTable(Database& db) {
 }
 
 void SuperManagerDashboard::addUser(Database& db) {
-    std::string username, password, role;
+    std::string username, password, role , email;
+
     std::cout << "Enter username: ";
-    std::cin >> username;
+    std::cin.ignore();
+    std::getline(std::cin, username);  // Use std::getline() to read the full username with spaces
+
     std::cout << "Enter password: ";
-    std::cin >> password;
+    std::cin.ignore();
+    std::getline(std::cin, password);   // Use std::getline() to read the full password with spaces
+
+    std::cout << "Enter Email-ID: ";
+    std::cin.ignore();
+    std::getline(std::cin, email);
+
     std::cout << "Enter role (e.g., Admin, FrontDesk, Surveyor, etc.): ";
-    std::cin >> role;
+    std::cin.ignore();
+    std::getline(std::cin, role);
 
     // Insert user data into the database
-    std::string query = "INSERT INTO dbo.Users (Username, PasswordHash, Role) VALUES ('" + username + "', '" + password + "', '" + role + "')";
+    std::string query = "INSERT INTO dbo.Users (Username, PasswordHash, Role , Email) VALUES ('" + username + "', '" + password + "', '" + role + "' , '" + email + "')";
     db.RunQuery(db.ConnectToSQLServer(true), query);
     std::cout << "New user added successfully.\n";
 }
