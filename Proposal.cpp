@@ -4,8 +4,8 @@
 #include "Database.h"
 #include "Client.h"
 #include "FDclientDashboard.h"
-#include "SUclientDashboard.h"
 #include <iomanip>
+
 
 
 Proposal::Proposal(int pid, int cid, std::string InsuType, long lyfcvramt, std::string status, std::string form , std::string paymentmode , std::string premiumpermon ) : proposalID(pid), clientID(cid), InsuranceType(InsuType), LifecoverAmount(lyfcvramt), status(status), form(form) , paymentmode(paymentmode) , premiumpermon(premiumpermon) {}
@@ -162,7 +162,42 @@ else {
 
 
 void Proposal::cancellation(Database& db, int proposalID) {
-    std::cout << "Cancel policy"; 
+    /*std::cout << "Cancel policy"; */
+    // Check if the policy can be cancelled (i.e., the status is "Approved" or "Active")
+    std::string query = "SELECT Status, ClientID FROM dbo.Proposal WHERE ProposalID = " + std::to_string(proposalID);
+    std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
+
+    if (!results.empty()) {
+        // Extract the status and client ID from the results
+        std::string status = results[0].at("Status");
+        int clientID = std::stoi(results[0].at("ClientID"));
+
+        if (status == "Approved" || status == "Active") {
+            //  Update the proposal status to 'Cancelled'
+            std::string updateQuery = "UPDATE dbo.Proposal SET Status = 'Cancelled' WHERE ProposalID = " + std::to_string(proposalID);
+            db.RunQuery(db.ConnectToSQLServer(true), updateQuery);
+            std::cout << "The policy has been successfully cancelled.\n";
+
+            //  Insert the cancellation record into the Cancellation table
+            std::string insertCancellationQuery = "INSERT INTO dbo.Cancellation (ProposalID, CancellationDate, ReasonForCancellation) "
+                "VALUES (" + std::to_string(proposalID) + ", GETDATE(), 'Policy cancelled by client')";
+            db.RunQuery(db.ConnectToSQLServer(true), insertCancellationQuery);
+
+            // Send a notification to the client about the cancellation
+            std::string notificationMessage = "Your policy with Proposal ID " + std::to_string(proposalID) + " has been successfully cancelled.";
+            std::string insertNotificationQuery = "INSERT INTO dbo.Notifications (ClientID, Message, Timestamp) "
+                "VALUES (" + std::to_string(clientID) + ", '" + notificationMessage + "', GETDATE())";
+            db.RunQuery(db.ConnectToSQLServer(true), insertNotificationQuery);
+
+            std::cout << "A notification has been sent to the client.\n";
+        }
+        else {
+            std::cout << "The policy cannot be cancelled as it is not in an active or approved state.\n";
+        }
+    }
+    else {
+        std::cout << "Policy not found or invalid ProposalID.\n";
+    }
 
 }
 

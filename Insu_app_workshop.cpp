@@ -165,21 +165,24 @@ void launchDashboard(const std::string& role , Database& db) {
 int main() {
     Database db;
     Login loginSystem(db);
-    std::string username, password , role;
-    std::cout << "Enter Username: ";
-    std::cin >> username;
-    std::cout << "Enter Password: ";
-    std::cin >> password;
+    do {
+        std::string username, password, role;
+        std::cout << "Enter Username: ";
+        std::cin >> username;
+        std::cout << "Enter Password: ";
+        std::cin >> password;
 
-    loginSystem.authenticateUser(username, password ,role);
+        loginSystem.authenticateUser(username, password, role);
 
-    if (!role.empty()) {
-        std::cout << "Login successful! Role: " << role << "\n";
-        launchDashboard(role,db);
-    }
-    else {
-        std::cout << "Login failed. Invalid credentials.\n";
-    }
+        if (!role.empty()) {
+            std::cout << "Login successful! Role: " << role << "\n";
+            launchDashboard(role, db);
+        }
+        else {
+            std::cout << "Login failed. Invalid credentials.\n";
+        }
+        system("cls");
+    } while (true);
 
     return 0;
 }

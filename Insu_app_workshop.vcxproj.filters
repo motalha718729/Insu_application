@@ -36,9 +36,6 @@
     <ClCompile Include="Proposal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SUclientDashboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Database.h">
@@ -57,9 +54,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Proposal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SUclientDashboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -30,7 +30,11 @@ void FDclientDashboard::ClientdisplayMenu(Database& db , Client cd) {
         //    }
            break;
         case 3:
-            std::cout << "Cancelling Policy\n";
+            int pd;
+            /*std::cout << "Cancelling Policy\n";*/
+            std::cout << "Enter Proposal ID \n";
+            std::cin >> pd;
+            Proposal::cancellation(db, pd);
             break;
         case 4:
             std::cout << "Exiting Client DashBoard....\n";
@@ -113,7 +117,7 @@ void FDclientDashboard::ClientdisplayPolicy(Database& db, Proposal pd) {
         std::string option;
         std::cout << "Do you want to proceed to convert the proposal to a policy? (yes/no): ";
         std::cin >> option;
-
+        double amountToPay = std::stod(pd.premiumpermon);
         if (option == "yes") {
             // Changing the proposal status to Policy and updating the form
             std::string query = "UPDATE dbo.Proposal SET  Form = 'Policy' WHERE ProposalID = " + std::to_string(pd.proposalID);
@@ -127,7 +131,7 @@ void FDclientDashboard::ClientdisplayPolicy(Database& db, Proposal pd) {
 
             // Now, let's handle payment details
             std::string paymentOption;
-            double amountToPay;
+           
             if (pd.paymentmode == "HalfYr" ) {
                  amountToPay = std::stod(pd.premiumpermon)*6; // This should be the premium that needs to be paid
              }
