@@ -61,10 +61,16 @@ void SurveyorDashboard::displayMenu(Database& db) {
             int pID;
             std::cout << "Enter Proposal ID: ";
             std::cin >> pID;
-            {
-                Proposal proposal = Proposal::selectProposal(db, pID);
-                proposal.showClientDashboard(db, proposal); //  showSUClientDashboard()
-                
+            if (Proposal::isProposalBelongsToClient(db, pID, cd)) {
+
+                {
+                    Proposal proposal = Proposal::selectProposal(db, pID);
+                    proposal.showClientDashboard(db, proposal); //  showSUClientDashboard()
+
+                }
+            }
+            else {
+                std::cout << "The Proposal ID " << pID << " does not belong to the selected client (Client ID: " << cd << ").\n";
             }
             break;
         case 2:
@@ -93,9 +99,14 @@ void UnderwriterDashboard::displayMenu(Database& db) {
                 int pID;
                 std::cout << "Enter Proposal ID: ";
                 std::cin >> pID;
-                {
-                    Proposal proposal = Proposal::selectPolicy(db, pID); //need to make selectPolicy 
-                    proposal.showClientDashboardUW(db, proposal);
+                if (Proposal::isProposalBelongsToClient(db, pID, cd)) {
+                    {
+                        Proposal proposal = Proposal::selectPolicy(db, pID); //need to make selectPolicy 
+                        proposal.showClientDashboardUW(db, proposal);
+                    }
+                }
+                else {
+                    std::cout << "The Proposal ID " << pID << " does not belong to the selected client (Client ID: " << cd << ").\n";
                 }
             }
             break;

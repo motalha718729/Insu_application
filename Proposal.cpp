@@ -325,3 +325,18 @@ void Proposal::showClientDashboardUW(Database& db, Proposal pd) {
     //std::cout << "3. Cancel Policy\n";
     FDclientDashboard::ClientdisplayPolicy(db, pd);
 }
+
+bool Proposal::isProposalBelongsToClient(Database& db, int proposalID, int clientID) {
+    // Construct the SQL query to check if the ProposalID belongs to the provided ClientID
+    std::string query = "SELECT COUNT(*) AS proposal_count FROM dbo.Proposal WHERE ProposalID = "
+        + std::to_string(proposalID) + " AND ClientID = " + std::to_string(clientID);
+
+    // Run the query and get the results
+    std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
+
+    // If the count is 1, it means the Proposal belongs to the client
+    if (!results.empty() && std::stoi(results[0].at("proposal_count")) > 0) {
+        return true;  // Proposal belongs to the client
+    }
+    return false;  // Proposal does not belong to the client
+}

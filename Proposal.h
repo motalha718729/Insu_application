@@ -33,6 +33,7 @@ public:
     static Proposal selectPolicy(Database& db, int proposalID);
     void showClientDashboard(Database& db, Proposal pd);
     void showClientDashboardUW(Database& db, Proposal pd);
+    static bool isProposalBelongsToClient(Database& db, int proposalID, int clientID);
 };
 
 #endif // CLIENT_H

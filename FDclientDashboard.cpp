@@ -3,7 +3,7 @@
 #include "Database.h"
 #include "Proposal.h"
 
-void FDclientDashboard::ClientdisplayMenu(Database& db , Client cd) {
+void FDclientDashboard::ClientdisplayMenu(Database& db , Client cd) { //Frontdesk Client Dashboard
 
     int choice;
     do {
@@ -31,10 +31,16 @@ void FDclientDashboard::ClientdisplayMenu(Database& db , Client cd) {
            break;
         case 3:
             int pd;
-            /*std::cout << "Cancelling Policy\n";*/
             std::cout << "Enter Proposal ID \n";
             std::cin >> pd;
-            Proposal::cancellation(db, pd);
+            /*std::cout << "Cancelling Policy\n";*/
+            if (Proposal::isProposalBelongsToClient(db, pd, cd.clientID)) {
+
+                Proposal::cancellation(db, pd);
+            }
+            else {
+                std::cout << "The Proposal ID " << pd << " does not belong to the selected client (Client ID: " << cd.clientID << ").\n";
+            }
             break;
         case 4:
             std::cout << "Exiting Client DashBoard....\n";
@@ -47,7 +53,7 @@ void FDclientDashboard::ClientdisplayMenu(Database& db , Client cd) {
 }
 
 
-void FDclientDashboard::ClientdisplayProposal(Database& db, Proposal pd) {
+void FDclientDashboard::ClientdisplayProposal(Database& db, Proposal pd) {  //Surveyor Client Dashboard
 
     double premium = std::stod(pd.premiumpermon);
 
@@ -107,11 +113,11 @@ void FDclientDashboard::ClientdisplayProposal(Database& db, Proposal pd) {
 // 
 
 std::string generatePolicyNumber() {
-    // Get the current time and convert it to a string (e.g., "20250221")
+
     return std::to_string(rand() % 9000 + 1000);
 }
 
-void FDclientDashboard::ClientdisplayPolicy(Database& db, Proposal pd) {
+void FDclientDashboard::ClientdisplayPolicy(Database& db, Proposal pd) { // Underwriter Client Dashboard
    /* std::cout << "\nPlease choose an option:\n";
     std::cout << "1. Approve Proposal\n";
     std::cout << "2. Reject Proposal\n";
