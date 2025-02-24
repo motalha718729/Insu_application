@@ -24,6 +24,14 @@ public:
 	  };
 	  class SuperManagerDashboard : public Dashboard
 	  {
-	  public: void displayMenu(Database& db) override;
+	  public: 
+		  void displayMenu(Database& db) override;
+		  void manageUsers(Database& db);
+		  void viewApprovalsTable(Database& db);
+		  void viewPaymentsTable(Database& db);
+		  void addUser(Database& db);
+		  void updateUser(Database& db);
+		  void deleteUser(Database& db);
+		  void viewAllUsers(Database& db);
 	  };
 #endif // DASHBOARD_H

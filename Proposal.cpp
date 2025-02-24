@@ -202,7 +202,7 @@ void Proposal::cancellation(Database& db, int proposalID) {
 }
 
 
-void Proposal::displayProposal(Database& db, int clientID) {
+int Proposal::displayProposal(Database& db, int clientID) {
     std::string query = "SELECT ProposalID , InsuranceType , Status , Form  FROM dbo.Proposal WHERE [Status] = 'Pending' AND ClientID = " + std::to_string(clientID);
     std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
     if (!results.empty()) {
@@ -218,9 +218,11 @@ void Proposal::displayProposal(Database& db, int clientID) {
                 << row.at("Status") << "\t"
                 << row.at("Form") << "\n";
         }
+        return 1;
     }
     else {
         std::cout << "No results found.\n";
+        return 0;
     }
 }
 

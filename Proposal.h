@@ -28,7 +28,7 @@ public:
     static void displayPolicy(Database& db, Client cd);
     static int displayPolicyUW(Database& db, int clientID);
     static void cancellation(Database& db, int proposalID);
-    static void displayProposal(Database& db, int clientID);
+    static int displayProposal(Database& db, int clientID);
     static Proposal selectProposal(Database& db, int proposalID);
     static Proposal selectPolicy(Database& db, int proposalID);
     void showClientDashboard(Database& db, Proposal pd);
