@@ -91,7 +91,7 @@ void FDclientDashboard::ClientdisplayProposal(Database& db, Proposal pd) {
     db.RunQuery(db.ConnectToSQLServer(true), query);
 
 
-    // Optionally, you could display the updated status
+    
     std::cout << "Proposal status updated to: " << status << "\n";
 }
 
@@ -105,11 +105,18 @@ void FDclientDashboard::ClientdisplayProposal(Database& db, Proposal pd) {
 //}
 //
 // 
+
+std::string generatePolicyNumber() {
+    // Get the current time and convert it to a string (e.g., "20250221")
+    return std::to_string(rand() % 9000 + 1000);
+}
+
 void FDclientDashboard::ClientdisplayPolicy(Database& db, Proposal pd) {
    /* std::cout << "\nPlease choose an option:\n";
     std::cout << "1. Approve Proposal\n";
     std::cout << "2. Reject Proposal\n";
     std::cout << "Enter your choice (1 or 2): ";*/
+
 
     std::cout << "Proposal Status: " << pd.status<< "\n";
 
@@ -120,16 +127,17 @@ void FDclientDashboard::ClientdisplayPolicy(Database& db, Proposal pd) {
         double amountToPay = std::stod(pd.premiumpermon);
         if (option == "yes") {
             // Changing the proposal status to Policy and updating the form
-            std::string query = "UPDATE dbo.Proposal SET  Form = 'Policy' WHERE ProposalID = " + std::to_string(pd.proposalID);
+            std::string policyNumber = (generatePolicyNumber());
+            std::string query = "UPDATE dbo.Proposal SET  Form = 'Policy' ,PolicyNumber = '"  + policyNumber + "'   WHERE ProposalID = " + std::to_string(pd.proposalID);
             db.RunQuery(db.ConnectToSQLServer(true), query);
-            std::cout << "Proposal converted to Policy.\n";
+            std::cout << "Proposal converted to Policy With Policy Number " + policyNumber + " \n";
 
             std::string approvalQuery = "INSERT INTO dbo.Approvals (ProposalID, ApprovedBy, ApprovalStatus, ApprovalDate) "
                 "VALUES (" + std::to_string(pd.proposalID) + ", 'Mathew', 'Approved', GETDATE())";  // Replace 'Admin' with the actual person approving if needed
             db.RunQuery(db.ConnectToSQLServer(true), approvalQuery);
             std::cout << "Approval recorded in the system.\n";
 
-            // Now, let's handle payment details
+            //  handle payment details
             std::string paymentOption;
            
             if (pd.paymentmode == "HalfYr" ) {

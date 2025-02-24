@@ -46,8 +46,8 @@ void SurveyorDashboard::displayMenu(Database& db) {
     do {
         std::cout << "\nSurveyor Dashboard:\n";
         std::cout << "1. Approve Proposals\n";
-        std::cout << "2. Review Policies\n";
-        std::cout << "3. Logout\n";
+        /*std::cout << "2. Review Policies\n";*/
+        std::cout << "2. Logout\n";
         std::cout << "Enter Your Choice\n";
         std::cin >> choice;
 
@@ -67,11 +67,11 @@ void SurveyorDashboard::displayMenu(Database& db) {
                 
             }
             break;
-        case 3:
+        case 2:
             std::cout << "Exiting Front Desk DashBoard....\n";
             break;
         }
-    } while (choice != 3);
+    } while (choice != 2);
 }
 
 void UnderwriterDashboard::displayMenu(Database& db) {
@@ -79,8 +79,8 @@ void UnderwriterDashboard::displayMenu(Database& db) {
     do {
         std::cout << "\nUnderwriter Dashboard:\n";
         std::cout << "1. Approve Policies\n";
-        std::cout << "2. Risk Assessment\n";
-        std::cout << "3. Logout\n";
+       /* std::cout << "2. Risk Assessment\n";*/
+        std::cout << "2. Logout\n";
         std::cin >> choice;
 
         switch (choice) {
@@ -99,11 +99,11 @@ void UnderwriterDashboard::displayMenu(Database& db) {
                 }
             }
             break;
-        case 3:
+        case 2:
             std::cout << "Exiting Front Desk DashBoard....\n";
             break;
         }
-    } while (choice != 3);
+    } while (choice != 2);
 }
 
 void SuperManagerDashboard::displayMenu(Database& db) {
