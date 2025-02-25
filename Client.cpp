@@ -47,6 +47,7 @@ void Client::createNewClient(Database& db) {
     std::string query = "INSERT INTO dbo.Client (ClientID, UserID , FirstName , LastName , DOB , Gender , Email , Mobile , SmokerStatus , AnnualIncome , Occupation) VALUES ('" + ClientID + "', '" + UserID + "', '" + FirstName + "', '" + LastName + "', '" + DOB + "', '" + Gender + "', '" + Email + "', '" + Mobile + "', '" + SmokerStatus + "', '" + AnnualIncome + "', '" + Occupation + "')";
     
     db.RunQuery(db.ConnectToSQLServer(true),query);
+    system("cls");
     std::cout << "Client created successfully!\n";
 
 }
@@ -109,5 +110,6 @@ void Client::showClientDashboard(Database& db , Client cd) {
     //std::cout << "1. Create New Proposal\n";
     //std::cout << "2. List Policies\n"; 
     //std::cout << "3. Cancel Policy\n";
+    system("cls");
     FDclientDashboard::ClientdisplayMenu(db , cd);
 }

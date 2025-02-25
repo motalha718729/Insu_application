@@ -16,6 +16,7 @@ void FrontDeskDashboard::displayMenu(Database& db) {
         std::cout << "3. Logout\n";
         std::cout << "Enter your choice:";
         std::cin >> choice;
+        system("cls");
 
         switch (choice) {
         case 1 :

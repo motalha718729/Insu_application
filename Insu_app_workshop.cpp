@@ -171,7 +171,7 @@ int main() {
         std::cin >> username;
         std::cout << "Enter Password: ";
         std::cin >> password;
-
+        system("cls");
         loginSystem.authenticateUser(username, password, role);
 
         if (!role.empty()) {
