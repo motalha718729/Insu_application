@@ -26,10 +26,15 @@ void FrontDeskDashboard::displayMenu(Database& db) {
             int cID;
             std::cout << "Enter Client ID: ";
             std::cin >> cID;
+            try
             {
                 Client client = Client::selectClient(db, cID);
                 
                 client.showClientDashboard(db ,client); //  showFDClientDashboard()
+            }
+            catch (const std::runtime_error& e) {
+                std::cout << e.what() << "\n"; 
+                return; 
             }
             break;
         case 3 :

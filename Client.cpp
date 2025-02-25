@@ -86,9 +86,22 @@ void Client::displayClients(Database& db) {
 //}
 
 Client Client::selectClient(Database& db, int clientID) {
-    std::string query = "SELECT * FROM Client WHERE ClientID = " + std::to_string(clientID);
+/*    std::string query = "SELECT * FROM Client WHERE ClientID = " + std::to_string(clientID);
     db.RunQuery(db.ConnectToSQLServer(true), query);
-    return Client(clientID, "", "", "", ""); 
+    return Client(clientID, "", "", "", "");*/
+
+    std::string query = "SELECT * FROM dbo.Client WHERE ClientID = " + std::to_string(clientID);
+    std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
+
+    if (results.empty()) {
+        // No client found with the given ClientID
+        std::cout << "No client found with Client ID: " << clientID << "\n";
+        // You can return a null or empty Client object, or handle it as needed
+        throw std::runtime_error("Client not found");
+    }
+    else {
+        return Client(clientID, "", "", "", "");
+    }
 }
 
 void Client::showClientDashboard(Database& db , Client cd) { 
