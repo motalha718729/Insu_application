@@ -90,9 +90,6 @@ void Proposal::createNewPropsal(Database& db , Client cd) {
     std::cout << "Enter Form: ";
     std::getline(std::cin, Form);
 
-    // You can also use the current date or prompt the user for the date as a string
-   /* std::cout << "Enter CreatedAt (e.g., YYYY-MM-DD HH:MM:SS): ";
-    std::getline(std::cin, CreatedAt);*/
 
     std::string query =  "INSERT INTO dbo.Proposal (ProposalID, ClientID, InsuranceType, LifeCoverAmount, LifeCoverUpToAge, PremiumPerMonth, SelectedTopUps, PaymentTenure, PaymentMode,  Status, PolicyNumber, Form, CreatedAt) VALUES ('" + propID + "','" + clientid + "', '" + InsuType + "', "+ std::to_string(LifeCoverAmount) + ", " + std::to_string(LifeCoverUpToAge) + ", " + std::to_string(PremiumPerMonth) + ", '" + SelectedTopUps + "', "
         + std::to_string(PaymentTenure) + ", '" + PaymentMode + "', '" + Status + "', '" + PolicyNumber + "', '"
@@ -168,17 +165,17 @@ void Proposal::cancellation(Database& db, int proposalID) {
     std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
 
     if (!results.empty()) {
-        // Extract the status and client ID from the results
+       
         std::string status = results[0].at("Status");
         int clientID = std::stoi(results[0].at("ClientID"));
 
         if (status == "Approved" || status == "Active") {
-            //  Update the proposal status to 'Cancelled'
+            
             std::string updateQuery = "UPDATE dbo.Proposal SET Status = 'Cancelled' WHERE ProposalID = " + std::to_string(proposalID);
             db.RunQuery(db.ConnectToSQLServer(true), updateQuery);
             std::cout << "The policy has been successfully cancelled.\n";
 
-            //  Insert the cancellation record into the Cancellation table
+            
             std::string insertCancellationQuery = "INSERT INTO dbo.Cancellation (ProposalID, CancellationDate, ReasonForCancellation) "
                 "VALUES (" + std::to_string(proposalID) + ", GETDATE(), 'Policy cancelled by client')";
             db.RunQuery(db.ConnectToSQLServer(true), insertCancellationQuery);
@@ -235,9 +232,9 @@ int Proposal::displayPolicyUW(Database& db, int clientID) {
         std::cout << "ProposalID\tInsuranceType\tStatus\tForm\n";
         std::cout << "------------------------------------------------------\n";
 
-        // Loop through each row (map)
+        
         for (const auto& row : results) {
-            // For each row, print each column (key-value pair) in the map
+           
             std::cout << row.at("ProposalID") << "\t"
                 << row.at("InsuranceType") << "\t"
                 << row.at("Status") << "\t"
@@ -256,7 +253,7 @@ Proposal Proposal::selectProposal(Database& db, int proposalID) {
     std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
 
     if (!results.empty()) {
-        std::map<std::string, std::string> proposal = results[0]; // Get the first (and hopefully only) row
+        std::map<std::string, std::string> proposal = results[0]; 
 
         // Now, display the details of the proposal
         std::cout << "Proposal Details:\n";
@@ -287,7 +284,7 @@ Proposal Proposal::selectPolicy(Database& db, int proposalID) {
     std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
 
     if (!results.empty()) {
-        std::map<std::string, std::string> proposal = results[0]; // Get the first (and hopefully only) row
+        std::map<std::string, std::string> proposal = results[0]; 
 
         // Now, display the details of the proposal
         std::cout << "Proposal Details:\n";
@@ -314,17 +311,11 @@ Proposal Proposal::selectPolicy(Database& db, int proposalID) {
 }
 
 void Proposal::showClientDashboard(Database& db, Proposal pd) {
-    //std::cout << "Client Dashboard\n";
-    //std::cout << "1. Create New Proposal\n";
-    //std::cout << "2. List Policies\n"; 
-    //std::cout << "3. Cancel Policy\n";
+
     FDclientDashboard::ClientdisplayProposal (db, pd);
 }
 void Proposal::showClientDashboardUW(Database& db, Proposal pd) {
-    //std::cout << "Client Dashboard\n";
-    //std::cout << "1. Create New Proposal\n";
-    //std::cout << "2. List Policies\n"; 
-    //std::cout << "3. Cancel Policy\n";
+
     FDclientDashboard::ClientdisplayPolicy(db, pd);
 }
 
@@ -333,12 +324,11 @@ bool Proposal::isProposalBelongsToClient(Database& db, int proposalID, int clien
     std::string query = "SELECT COUNT(*) AS proposal_count FROM dbo.Proposal WHERE ProposalID = "
         + std::to_string(proposalID) + " AND ClientID = " + std::to_string(clientID);
 
-    // Run the query and get the results
+    
     std::vector<std::map<std::string, std::string>> results = db.RunQuerydisplay(db.ConnectToSQLServer(true), query);
 
-    // If the count is 1, it means the Proposal belongs to the client
     if (!results.empty() && std::stoi(results[0].at("proposal_count")) > 0) {
-        return true;  // Proposal belongs to the client
+        return true;  
     }
-    return false;  // Proposal does not belong to the client
+    return false; 
 }

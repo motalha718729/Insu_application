@@ -20,14 +20,8 @@ void FDclientDashboard::ClientdisplayMenu(Database& db , Client cd) { //Frontdes
             Proposal::createNewPropsal(db,cd);
             break;
         case 2:
-              Proposal::displayPolicy(db,cd);
-        //    int cID;
-        //    std::cout << "Enter Client ID: ";
-        //    std::cin >> cID;
-        //    {
-        //        Client client = Client::selectClient(db, cID);
-        //        /*client.showClientDashboard();*/  //  showFDClientDashboard()
-        //    }
+            Proposal::displayPolicy(db, cd);
+
            break;
         case 3:
             int pd;
